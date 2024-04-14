@@ -93,12 +93,12 @@ const likeUnlikePost = async (req, res) => {
     if (userLikedPost) {
       // Unlike post
       await Post.updateOne({ _id: postId }, { $pull: { likes: userId } });
-      res.status(200).json({ error: "Post unliked successfully" });
+      res.status(200).json({ message: "Post unliked successfully" });
     } else {
       // Like post
       post.likes.push(userId);
       await post.save();
-      res.status(200).json({ error: "Post liked successfully" });
+      res.status(200).json({ message: "Post liked successfully" });
     }
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -127,7 +127,7 @@ const replyToPost = async (req, res) => {
     post.replies.push(reply);
     await post.save();
 
-    res.status(200).json({ error: "Reply added successfully", post });
+    res.status(200).json({ message: "Reply added successfully", post });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -147,7 +147,7 @@ const getFeedPosts = async (req, res) => {
       createdAt: -1,
     });
 
-    res.status(200).json({ feedPosts });
+    res.status(200).json(feedPosts);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

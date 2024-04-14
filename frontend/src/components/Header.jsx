@@ -16,7 +16,7 @@ const Header = () => {
       mb="12"
       alignItems={"center"}
       justifyContent={"center"}
-      gap={40}
+      gap={{ base: 70, lg: 40 }}
     >
       {user && (
         <Link as={RouterLink} to="/" _hover={{ color: "#FF9900" }}>

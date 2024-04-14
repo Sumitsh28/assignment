@@ -8,6 +8,24 @@ import {
   useToast,
   Button,
   useColorModeValue,
+  Tooltip,
+  Menu,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  MenuItemOption,
+  useDisclosure,
+  MenuGroup,
+  MenuOptionGroup,
+  MenuDivider,
+  Image,
 } from "@chakra-ui/react";
 import { CgMoreO } from "react-icons/cg";
 import { IoMdLink } from "react-icons/io";
@@ -16,17 +34,18 @@ import userAtoms from "../../atoms/UserAtoms";
 import { Link, Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
 import useShowToast from "../../hooks/useShowToast";
+import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
 
 const UserHeader = ({ user }) => {
   const toast = useToast();
   const currentUser = useRecoilValue(userAtoms); //logged in user
   const [isHovered, setIsHovered] = useState(false);
   const [following, setFollowing] = useState(
-    user.followers.includes(currentUser._id)
+    user.followers.includes(currentUser?._id)
   );
   const [updating, setUpdating] = useState(false);
   const showToast = useShowToast();
-
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const copyURL = () => {
     const copy = window.location.href;
 
@@ -77,6 +96,9 @@ const UserHeader = ({ user }) => {
       setUpdating(false);
     }
   };
+
+  const openImg = () => {};
+
   return (
     <VStack gap={4} alignItems={"start"}>
       <Flex justifyContent={"space-between"} w={"full"}>
@@ -97,11 +119,61 @@ const UserHeader = ({ user }) => {
             </Text>
           </Flex>
         </Flex>
-        <Box>
+        <Box onClick={openImg} cursor={"pointer"}>
           {user.profilePic && (
+            <>
+              <Avatar
+                name={user.name}
+                src={user.profilePic}
+                size={{
+                  base: "lg",
+                  md: "xl",
+                }}
+                boxShadow={
+                  isHovered
+                    ? "0 0 5px 5px #ff9900d7, 0 0 10px 10px #ff990076, 0 0 1px 1px #ff990058"
+                    : "md"
+                }
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                onClick={onOpen}
+              />
+
+              <Modal isOpen={isOpen} onClose={onClose}>
+                <ModalOverlay />
+
+                <ModalContent
+                  bg={useColorModeValue("#0000000", "#0000000")}
+                  h="400px"
+                  display={"flex"}
+                >
+                  <ModalCloseButton _hover={{ color: "#FF9900" }} />
+                  <ModalBody
+                    pb={6}
+                    mt={20}
+                    display="flex"
+                    justifyContent="center"
+                  >
+                    <Image
+                      name={user.name}
+                      src={user.profilePic}
+                      style={{
+                        width: "78%",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: "50%",
+                        overflow: "hidden",
+                      }}
+                    />
+                  </ModalBody>
+                </ModalContent>
+              </Modal>
+            </>
+          )}
+          {!user.profilePic && (
             <Avatar
               name={user.name}
-              src={user.profilePic}
+              src="https://bit.ly/broken-link"
               size={{
                 base: "lg",
                 md: "xl",
@@ -113,16 +185,6 @@ const UserHeader = ({ user }) => {
               }
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
-            />
-          )}
-          {!user.profilePic && (
-            <Avatar
-              name={user.name}
-              src="https://bit.ly/broken-link"
-              size={{
-                base: "lg",
-                md: "xl",
-              }}
             />
           )}
         </Box>
@@ -158,12 +220,66 @@ const UserHeader = ({ user }) => {
           <Text color={"gray.light"}>{user.following.length} following</Text>
         </Flex>
         <Flex gap={10}>
-          <Icon
-            as={CgMoreO}
-            boxSize={6}
-            cursor="pointer"
-            _hover={{ color: "#FF9900" }}
-          />
+          <Menu placement="left">
+            <MenuButton cursor="pointer" _hover={{ color: "#FF9900" }}>
+              <CgMoreO size={20} />
+            </MenuButton>
+            <MenuList
+              minWidth="50px"
+              placement="left"
+              style={{ display: "flex" }}
+              bg="#0000000"
+            >
+              <MenuItem
+                flex="1"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                bg="#0000000"
+              >
+                <Text _hover={{ color: "#FF9900" }}>
+                  <FaFacebook size={20} />
+                </Text>
+              </MenuItem>
+              <MenuItem
+                flex="1"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                bg="#0000000"
+              >
+                <Text _hover={{ color: "#FF9900" }}>
+                  <FaLinkedin size={20} />
+                </Text>
+              </MenuItem>
+              <MenuItem
+                flex="1"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                bg="#0000000"
+              >
+                <Text _hover={{ color: "#FF9900" }}>
+                  <FaTwitter size={20} />
+                </Text>
+              </MenuItem>
+              <MenuItem
+                flex="1"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                bg="#0000000"
+              >
+                <Text _hover={{ color: "#FF9900" }}>
+                  <FaInstagram
+                    size={20}
+                    style={{ marginBottom: "8px", marginTop: "8px" }}
+                  />
+                </Text>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+
           <Icon
             as={IoMdLink}
             boxSize={6}

@@ -49,35 +49,33 @@ const PostPage = () => {
           <Text fontSize={"sm"} color={"gray.light"}>
             1d
           </Text>
-          <Text _hover={{ color: "#FF9900" }}>
-            <Menu>
-              <MenuButton>
-                <BsThreeDots />
-              </MenuButton>
-              <Portal>
-                <MenuList>
-                  <MenuItem>
-                    <Flex gap={2} alignItems={"center"}>
-                      <FaShare />
-                      Share
-                    </Flex>
-                  </MenuItem>
-                  <MenuItem>
-                    <Flex gap={2} alignItems={"center"}>
-                      <MdBookmarkAdd />
-                      Save
-                    </Flex>
-                  </MenuItem>
-                  <MenuItem>
-                    <Flex gap={2} alignItems={"center"}>
-                      <MdReportProblem />
-                      Report
-                    </Flex>
-                  </MenuItem>
-                </MenuList>
-              </Portal>
-            </Menu>
-          </Text>
+
+          <Menu placement="bottom">
+            <MenuButton _hover={{ color: "#FF9900" }}>
+              <BsThreeDots />
+            </MenuButton>
+
+            <MenuList bg="#000000" minWidth="60px">
+              <MenuItem bg="#000000" _hover={{ color: "#FF9900" }}>
+                <Flex gap={2} alignItems={"center"}>
+                  <FaShare />
+                  Share
+                </Flex>
+              </MenuItem>
+              <MenuItem bg="#000000" _hover={{ color: "#FF9900" }}>
+                <Flex gap={2} alignItems={"center"}>
+                  <MdBookmarkAdd />
+                  Save
+                </Flex>
+              </MenuItem>
+              <MenuItem bg="#000000" _hover={{ color: "#FF9900" }}>
+                <Flex gap={2} alignItems={"center"}>
+                  <MdReportProblem />
+                  Report
+                </Flex>
+              </MenuItem>
+            </MenuList>
+          </Menu>
         </Flex>
       </Flex>
 
