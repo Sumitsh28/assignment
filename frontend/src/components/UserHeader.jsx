@@ -87,7 +87,7 @@ const UserHeader = ({ user }) => {
         user.followers.pop(); // simulate removing from followers
       } else {
         showToast("Success", `Followed ${user.name}`, "success");
-        user.followers.push(currentUser._id); // simulate adding to followers
+        user.followers.push(currentUser?._id); // simulate adding to followers
       }
       setFollowing(!following);
     } catch (error) {
@@ -190,7 +190,7 @@ const UserHeader = ({ user }) => {
         </Box>
       </Flex>
       <Text> {user.bio}</Text>
-      {currentUser._id === user._id && (
+      {currentUser?._id === user._id && (
         <Link as={RouterLink} to="/update">
           <Button
             size={"sm"}
@@ -202,7 +202,7 @@ const UserHeader = ({ user }) => {
         </Link>
       )}
 
-      {currentUser._id !== user._id && (
+      {currentUser?._id !== user._id && (
         <Button
           size={"sm"}
           onClick={handleFollowUnfollow}

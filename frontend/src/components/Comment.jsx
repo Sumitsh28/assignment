@@ -17,13 +17,13 @@ import { MdBookmarkAdd, MdReportProblem } from "react-icons/md";
 import { FaReply } from "react-icons/fa";
 import { BsClipboard2Fill } from "react-icons/bs";
 
-const Comment = ({ userAvatar, createdAt, comment, username, likes }) => {
+const Comment = ({ reply, lastReply }) => {
   const [liked, setLiked] = useState(false);
 
   return (
     <>
       <Flex gap={4} py={2} my={2} w={"full"}>
-        <Avatar src={userAvatar} size={"sm"} />
+        <Avatar src={reply.userProfilePic} size={"sm"} />
         <Flex gap={1} w={"full"} flexDirection={"column"}>
           <Flex
             w={"full"}
@@ -31,12 +31,12 @@ const Comment = ({ userAvatar, createdAt, comment, username, likes }) => {
             alignItems={"center"}
           >
             <Text fontSize="sm" fontWeight="bold">
-              {username}
+              {reply.username}
             </Text>
             <Flex gap={2} alignItems={"center"}>
-              <Text fontSize={"sm"} color={"gray.light"}>
+              {/* <Text fontSize={"sm"} color={"gray.light"}>
                 {createdAt}
-              </Text>
+              </Text> */}
               <Text _hover={{ color: "#FF9900" }}>
                 <Menu>
                   <MenuButton>
@@ -68,11 +68,11 @@ const Comment = ({ userAvatar, createdAt, comment, username, likes }) => {
               </Text>
             </Flex>
           </Flex>
-          <Text>{comment}</Text>
-          <Actions liked={liked} setLiked={setLiked} />
+          <Text>{reply.text}</Text>
+          {/* <Actions liked={liked} setLiked={setLiked} />
           <Text fontSize={"sm"} color={"gray.light"}>
             {likes + (liked ? 1 : 0)} likes
-          </Text>
+          </Text> */}
         </Flex>
       </Flex>
       <Divider />

@@ -12,24 +12,84 @@ import {
   Portal,
   Text,
   Tooltip,
+  Spinner,
 } from "@chakra-ui/react";
 import { BsThreeDots } from "react-icons/bs";
 import Actions from "../components/Actions";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Comment from "../components/Comment";
 import { MdBookmarkAdd, MdReportProblem, MdStars } from "react-icons/md";
 import { FaShare } from "react-icons/fa";
+import useGetUserProfile from "../../hooks/useGetUserProfile";
+import useShowToast from "../../hooks/useShowToast";
+import { useNavigate, useParams } from "react-router-dom";
+import { formatDistanceToNow } from "date-fns";
+import { useRecoilValue } from "recoil";
+import userAtom from "../../atoms/UserAtoms";
+import { DeleteIcon } from "@chakra-ui/icons";
 
 const PostPage = () => {
-  const [liked, setLiked] = useState(false);
+  const { user, loading } = useGetUserProfile();
+  const [post, setPost] = useState(null);
+  const showToast = useShowToast();
+  const { pid } = useParams();
+  const currentUser = useRecoilValue(userAtom);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const getPost = async () => {
+      try {
+        const res = await fetch(`/api/posts/${pid}`);
+        const data = await res.json();
+        if (data.error) {
+          showToast("Error", data.error, "error");
+          return;
+        }
+        console.log(data);
+        setPost(data);
+      } catch (error) {
+        showToast("Error", error.message, "error");
+      }
+    };
+    getPost();
+  }, [showToast, pid]);
+
+  const handleDeletePost = async () => {
+    try {
+      if (!window.confirm("Are you sure you want to delete this post?")) return;
+
+      const res = await fetch(`/api/posts/${post._id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (data.error) {
+        showToast("Error", data.error, "error");
+        return;
+      }
+      showToast("Success", "Post deleted", "success");
+      navigate(`/${user.username}`);
+    } catch (error) {
+      showToast("Error", error.message, "error");
+    }
+  };
+
+  if (!user && loading) {
+    return (
+      <Flex justifyContent={"center"}>
+        <Spinner size={"xl"} />
+      </Flex>
+    );
+  }
+
+  if (!post) return null;
   return (
     <>
       <Flex>
         <Flex w={"full"} alignItems={"center"} gap={3}>
-          <Avatar src="/profile.jpg" size={"md"} name="Sumit" />
+          <Avatar src={user.profilePic} size={"md"} name="Sumit" />
           <Flex w={"full"} gap={2} alignItems={"center"}>
             <Text fontSize={"sm"} fontWeight={"bold"}>
-              sumit.sh28
+              {user.username}
             </Text>
             <Text color={"#ff9900"} fontSize={"large"}>
               <Tooltip
@@ -46,9 +106,22 @@ const PostPage = () => {
           </Flex>
         </Flex>
         <Flex gap={4} alignItems={"center"}>
-          <Text fontSize={"sm"} color={"gray.light"}>
-            1d
+          <Text
+            fontSize={"xs"}
+            width={36}
+            textAlign={"right"}
+            color={"gray.light"}
+          >
+            {formatDistanceToNow(new Date(post.createdAt))} ago
           </Text>
+
+          {currentUser?._id === user._id && (
+            <DeleteIcon
+              size={20}
+              cursor={"pointer"}
+              onClick={handleDeletePost}
+            />
+          )}
 
           <Menu placement="bottom">
             <MenuButton _hover={{ color: "#FF9900" }}>
@@ -68,28 +141,37 @@ const PostPage = () => {
                   Save
                 </Flex>
               </MenuItem>
-              <MenuItem bg="#000000" _hover={{ color: "#FF9900" }}>
-                <Flex gap={2} alignItems={"center"}>
-                  <MdReportProblem />
-                  Report
-                </Flex>
-              </MenuItem>
+              {currentUser?._id !== user._id && (
+                <MenuItem bg="#000000" _hover={{ color: "#FF9900" }}>
+                  <Flex gap={2} alignItems={"center"}>
+                    <MdReportProblem />
+                    Report
+                  </Flex>
+                </MenuItem>
+              )}
             </MenuList>
           </Menu>
         </Flex>
       </Flex>
 
-      <Text my={3}>First Trip</Text>
+      <Text my={3}>{post.text}</Text>
 
-      <Box borderRadius={6} overflow={"hidden"}>
-        <Image src={"/trip.jpg"} w={"full"} />
-      </Box>
+      {post.img && (
+        <Box
+          borderRadius={6}
+          overflow={"hidden"}
+          border={"1px solid"}
+          borderColor={"gray.light"}
+        >
+          <Image src={post.img} w={"full"} />
+        </Box>
+      )}
 
       <Flex gap={3} my={3}>
-        <Actions liked={liked} setLiked={setLiked} />
+        <Actions post={post} />
       </Flex>
 
-      <Flex gap={2} alignItems={"center"}>
+      {/* <Flex gap={2} alignItems={"center"}>
         <Text color={"gray.light"} fontSize={"sm"}>
           238 replies
         </Text>
@@ -97,39 +179,16 @@ const PostPage = () => {
         <Text color={"gray.light"} fontSize={"sm"}>
           {200 + (liked ? 1 : 0)} likes
         </Text>
-      </Flex>
+      </Flex> */}
       <Divider my={4} />
 
-      <Flex justifyContent={"space-between"}>
-        <Flex gap={2} alignItems={"center"}>
-          <Text fontSize={"2xl"}>👋</Text>
-          <Text color={"gray.light"}>Get the app to like, reply and post.</Text>
-        </Flex>
-        <Button>Get</Button>
-      </Flex>
-
-      <Divider my={4} />
-      <Comment
-        comment="Looks really good!"
-        createdAt="2d"
-        likes={100}
-        username="johndoe"
-        userAvatar="https://bit.ly/dan-abramov"
-      />
-      <Comment
-        comment="Amazing!"
-        createdAt="1d"
-        likes={21}
-        username="janedoe"
-        userAvatar="https://bit.ly/code-beast"
-      />
-      <Comment
-        comment="Looks good!"
-        createdAt="2d"
-        likes={42}
-        username="sallydoe"
-        userAvatar="https://bit.ly/sage-adebayo"
-      />
+      {post.replies.map((reply) => (
+        <Comment
+          key={reply._id}
+          reply={reply}
+          lastReply={reply._id === post.replies[post.replies.length - 1]._id}
+        />
+      ))}
     </>
   );
 };
