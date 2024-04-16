@@ -24,20 +24,23 @@ import useGetUserProfile from "../../hooks/useGetUserProfile";
 import useShowToast from "../../hooks/useShowToast";
 import { useNavigate, useParams } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import userAtom from "../../atoms/UserAtoms";
 import { DeleteIcon } from "@chakra-ui/icons";
+import postsAtom from "../../atoms/PostsAtom";
 
 const PostPage = () => {
   const { user, loading } = useGetUserProfile();
-  const [post, setPost] = useState(null);
+  const [posts, setPosts] = useRecoilState(postsAtom);
   const showToast = useShowToast();
   const { pid } = useParams();
   const currentUser = useRecoilValue(userAtom);
   const navigate = useNavigate();
+  const currentPost = posts[0];
 
   useEffect(() => {
     const getPost = async () => {
+      setPosts([]);
       try {
         const res = await fetch(`/api/posts/${pid}`);
         const data = await res.json();
@@ -45,14 +48,13 @@ const PostPage = () => {
           showToast("Error", data.error, "error");
           return;
         }
-        console.log(data);
-        setPost(data);
+        setPosts([data]);
       } catch (error) {
         showToast("Error", error.message, "error");
       }
     };
     getPost();
-  }, [showToast, pid]);
+  }, [showToast, pid, setPosts]);
 
   const handleDeletePost = async () => {
     try {
@@ -81,7 +83,7 @@ const PostPage = () => {
     );
   }
 
-  if (!post) return null;
+  if (!currentPost) return null;
   return (
     <>
       <Flex>
@@ -112,16 +114,8 @@ const PostPage = () => {
             textAlign={"right"}
             color={"gray.light"}
           >
-            {formatDistanceToNow(new Date(post.createdAt))} ago
+            {formatDistanceToNow(new Date(currentPost.createdAt))} ago
           </Text>
-
-          {currentUser?._id === user._id && (
-            <DeleteIcon
-              size={20}
-              cursor={"pointer"}
-              onClick={handleDeletePost}
-            />
-          )}
 
           <Menu placement="bottom">
             <MenuButton _hover={{ color: "#FF9900" }}>
@@ -129,6 +123,21 @@ const PostPage = () => {
             </MenuButton>
 
             <MenuList bg="#000000" minWidth="60px">
+              <MenuItem bg="#000000" _hover={{ color: "#FF9900" }}>
+                <Flex gap={2} alignItems={"center"}>
+                  {currentUser?._id === user._id && (
+                    <Text
+                      onClick={handleDeletePost}
+                      display={"flex"}
+                      alignItems={"center"}
+                      gap={2}
+                    >
+                      <DeleteIcon size={20} />
+                      <Text>Delete</Text>
+                    </Text>
+                  )}
+                </Flex>
+              </MenuItem>
               <MenuItem bg="#000000" _hover={{ color: "#FF9900" }}>
                 <Flex gap={2} alignItems={"center"}>
                   <FaShare />
@@ -154,21 +163,21 @@ const PostPage = () => {
         </Flex>
       </Flex>
 
-      <Text my={3}>{post.text}</Text>
+      <Text my={3}>{currentPost.text}</Text>
 
-      {post.img && (
+      {currentPost.img && (
         <Box
           borderRadius={6}
           overflow={"hidden"}
           border={"1px solid"}
           borderColor={"gray.light"}
         >
-          <Image src={post.img} w={"full"} />
+          <Image src={currentPost.img} w={"full"} />
         </Box>
       )}
 
       <Flex gap={3} my={3}>
-        <Actions post={post} />
+        <Actions post={currentPost} />
       </Flex>
 
       {/* <Flex gap={2} alignItems={"center"}>
@@ -182,11 +191,14 @@ const PostPage = () => {
       </Flex> */}
       <Divider my={4} />
 
-      {post.replies.map((reply) => (
+      {currentPost.replies.map((reply) => (
         <Comment
           key={reply._id}
           reply={reply}
-          lastReply={reply._id === post.replies[post.replies.length - 1]._id}
+          lastReply={
+            reply._id ===
+            currentPost.replies[currentPost.replies.length - 1]._id
+          }
         />
       ))}
     </>
