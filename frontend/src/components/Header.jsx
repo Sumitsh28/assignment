@@ -16,6 +16,7 @@ import { useState } from "react";
 import { FiLogOut } from "react-icons/fi";
 import useLogout from "../../hooks/useLogout";
 import authScreenAtom from "../../atoms/AuthAtoms";
+import { BsFillChatQuoteFill } from "react-icons/bs";
 
 const Header = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -71,6 +72,9 @@ const Header = () => {
               onMouseEnter={() => setIsHovered(true)}
               onMouseLeave={() => setIsHovered(false)}
             />
+          </Link>
+          <Link as={RouterLink} to={`/chat`}>
+            <BsFillChatQuoteFill size={20} />
           </Link>
           <Button
             size={"xs"}
