@@ -91,15 +91,17 @@ const CreatePost = () => {
   return (
     <>
       <Button
-        position={"fixed"}
-        bottom={10}
         bg={useColorModeValue("gray.300", "gray.dark")}
         onClick={onOpen}
         _hover={{ color: "" }}
         size={{ base: "sm", sm: "md" }}
-        right={5}
+        rounded={"full"}
+        p={8}
       >
-        <AddIcon _hover={{ color: "#FF9900" }} />
+        <Flex _hover={{ color: "#FF9900" }} alignItems={"center"} gap={3}>
+          Create Post
+          <AddIcon />
+        </Flex>
       </Button>
 
       <Modal isOpen={isOpen} onClose={onClose}>
