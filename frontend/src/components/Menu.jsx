@@ -33,9 +33,10 @@ import { IoIosFastforward } from "react-icons/io";
 import { MdStars } from "react-icons/md";
 import { GrSettingsOption } from "react-icons/gr";
 import CreatePost from "./CreatePost";
+import CreateBlitz from "./CreateBlitz";
 
 const MyComponent = () => {
-  const [isLargerThan768] = useMediaQuery("(min-width: 768px)");
+  const [isLargerThan768] = useMediaQuery("(min-width: 987px)");
 
   return <div>{isLargerThan768 ? <Menuu /> : <MobileContent />}</div>;
 };
@@ -63,7 +64,7 @@ const Menuu = () => {
         justifyContent={"center"}
         gap={10}
       >
-        <CreatePost />
+        {location.pathname === "/blitz" ? <CreateBlitz /> : <CreatePost />}
 
         <Link
           as={RouterLink}

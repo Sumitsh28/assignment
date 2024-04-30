@@ -1,0 +1,22 @@
+.videoCard {
+  width: 100%;
+  height: 100%;
+  scroll-snap-align: center;
+  position: relative;
+  background-color: transparent;
+}
+
+.videoCard__player {
+  object-fit: fill;
+  width: 100%;
+  height: 100%;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  /* Ensure the overlay is below the video player */
+}

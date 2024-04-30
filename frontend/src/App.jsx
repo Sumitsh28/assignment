@@ -11,6 +11,7 @@ import userAtom from "../atoms/UserAtoms";
 import UpdateProfilePage from "./pages/UpdateProfilePage";
 import ChatPage from "./pages/ChatPage";
 import MyComponent from "./components/Menu";
+import Blitz from "./pages/Blitz";
 
 function App() {
   const user = useRecoilValue(userAtom);
@@ -53,6 +54,11 @@ function App() {
                 <Route
                   path="/chat"
                   element={user ? <ChatPage /> : <Navigate to={"/auth"} />}
+                />
+
+                <Route
+                  path="/blitz"
+                  element={user ? <Blitz /> : <Navigate to="/auth" />}
                 />
               </Routes>
             </Container>

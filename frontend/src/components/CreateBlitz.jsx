@@ -29,7 +29,7 @@ import { useLocation, useParams } from "react-router-dom";
 
 const MAX_CHAR = 500;
 
-const CreatePost = () => {
+function CreateBlitz() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [postText, setPostText] = useState("");
   const { handleImageChange, imgUrl, setImgUrl } = usePreviewImg();
@@ -99,7 +99,7 @@ const CreatePost = () => {
         p={8}
       >
         <Flex _hover={{ color: "#FF9900" }} alignItems={"center"} gap={3}>
-          Create Post
+          Create Blitz
           <AddIcon />
         </Flex>
       </Button>
@@ -175,6 +175,6 @@ const CreatePost = () => {
       </Modal>
     </>
   );
-};
+}
 
-export default CreatePost;
+export default CreateBlitz;
