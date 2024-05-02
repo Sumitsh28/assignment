@@ -35,6 +35,7 @@ import { Link, Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
 import useShowToast from "../../hooks/useShowToast";
 import { FaFacebook, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa";
+import { IoQrCode } from "react-icons/io5";
 
 const UserHeader = ({ user }) => {
   const toast = useToast();
@@ -45,7 +46,16 @@ const UserHeader = ({ user }) => {
   );
   const [updating, setUpdating] = useState(false);
   const showToast = useShowToast();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isOpenModal1,
+    onOpen: onOpenModal1,
+    onClose: onCloseModal1,
+  } = useDisclosure();
+  const {
+    isOpen: isOpenModal2,
+    onOpen: onOpenModal2,
+    onClose: onCloseModal2,
+  } = useDisclosure();
   const copyURL = () => {
     const copy = window.location.href;
 
@@ -136,10 +146,10 @@ const UserHeader = ({ user }) => {
                 }
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                onClick={onOpen}
+                onClick={onOpenModal1}
               />
 
-              <Modal isOpen={isOpen} onClose={onClose}>
+              <Modal isOpen={isOpenModal1} onClose={onCloseModal1}>
                 <ModalOverlay />
 
                 <ModalContent
@@ -219,7 +229,39 @@ const UserHeader = ({ user }) => {
           <Box w="1" h="1" bg={"gray.light"} borderRadius={"full"}></Box>
           <Text color={"gray.light"}>{user.following.length} following</Text>
         </Flex>
-        <Flex gap={10}>
+        <Flex gap={10} justifyContent={"center"} alignItems={"center"}>
+          <Text cursor="pointer" _hover={{ color: "#FF9900" }}>
+            <IoQrCode onClick={onOpenModal2} />
+            <Modal isOpen={isOpenModal2} onClose={onCloseModal2}>
+              <ModalOverlay />
+
+              <ModalContent
+                bg={useColorModeValue("#0000000", "#0000000")}
+                h="400px"
+                display={"flex"}
+              >
+                <ModalCloseButton _hover={{ color: "#FF9900" }} />
+                <ModalBody
+                  pb={6}
+                  mt={20}
+                  display="flex"
+                  justifyContent="center"
+                >
+                  <Image
+                    name={user.name}
+                    src={`https://quickchart.io/qr?text=${user.username}&size=200`}
+                    style={{
+                      width: "78%",
+                      height: "100%",
+                      objectFit: "cover",
+                      borderRadius: "50%",
+                      overflow: "hidden",
+                    }}
+                  />
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+          </Text>
           <Menu placement="left">
             <MenuButton cursor="pointer" _hover={{ color: "#FF9900" }}>
               <CgMoreO size={20} />
